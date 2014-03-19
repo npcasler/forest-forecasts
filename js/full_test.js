@@ -362,7 +362,8 @@ function switchTime() {
 function viewChange() {
     //set url for change layer
     removeLayer();
-    url = $('input:radio[name=species]:checked').val() + '_chg';
+    
+    url = 'maxent/' + $('#gcm').val() + '/' + $('#rcp').val() + '/' + $('input:radio[name=species]:checked').val();
     //clear current layer
     folderCur.getFeatures().removeChild(networkLink);
     //add change layer
