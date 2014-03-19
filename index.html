@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Google Earth Sample</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <!--link rel="stylesheet" href="assets/style/bootstrap.css" type="text/css"-->
+    <link href="http://bootswatch.com/cyborg/bootstrap.css" type="text/css" rel="stylesheet">
+    <link href="bootstrap/css/bootstrap-responsive.css" type="text/css" rel="stylesheet">
+    <link href="css/stylish-portfolio1.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/full_test.css" type="text/css" rel="stylesheet">
+    <link href="bootstrap/css/select2.css" type="text/css" rel="stylesheet">
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/images/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/images/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/images/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="assets/images/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="assets/images/ico/favicon.png">
+
+    <!-- STYLESHEETS -->
+    <!--link rel="stylesheet" href="assets/style/bootstrap.css" type="text/css" /-->
+
+    <!-- GOOGLE WEB FONTS -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,700,600,300,800' rel='stylesheet' type='text/css'>
+
+
+
+</head>
+
+<body onload="init()">
+
+
+    <!-- NAVIGATION -->
+    <nav class="navbar navbar-default navbar-fixed-top" id="navigation" style="margin-bottom:0px;">
+        <div class="content-container">
+            <div class="row-fluid">
+                <div class="span12">
+                    <!-- LOGO -->
+                    <!-- content goes here! -->
+                    <a id="menu-toggle" href="#" class="btn btn-primary  toggle"><i class="fa fa-bars"></i></a>
+                    <a id="menu-close" href="#" class="btn btn-default  pull-left toggle"><i class="fa fa-times"></i></a>
+
+                    <a class="navbar-brand" href="#page-welcome">
+                        <strong>Forest Forecasts</strong>
+                        <small>Predicting how trees will respond to climate change</small>
+                    </a>
+
+
+                    <!-- END LOGO -->
+
+
+                    <!-- END MOBILE MENU BUTTON -->
+
+                    <!-- MAIN MENU -->
+                    <div class="navbar-collapse collapse">
+                        <ul id="main-menu" class="nav navbar-nav">
+                            <li><a href="#" class="go-top">Home</a>
+                            </li>
+                            <li><a href="#page-work">Why Forest Forecasts</a>
+                            </li>
+                            <li><a href="#page-features">Climate Change Scenarios</a>
+                            </li>
+                            <li><a href="#page-about">About</a>
+                            </li>
+                            <li><a href="#page-modeling">Modeling</a>
+                            </li>
+                            <li><a href="#page-references">References</a>
+                            </li>
+                        </ul>
+
+                        <input type="text" id="period" class="pull-right" style="border: 0; background: transparent; color:#f6931f; font-weight: bold; display:none;">
+                        <div id="time-slider" class="pull-right" style="width:250px !important; display:none;"></div>
+                        <div class="btn-group pull-right" data-toggle="buttons-radio" vertical-align="center" id="time">
+                            <button type="button" class="btn btn-success active" id="current" value="0">Current</button>
+                            <button type="button" class="btn btn-success" id="2050" value="1">2050</button>
+                            <button type="button" class="btn btn-success" id="2070" value="2">2070</button>
+                            <!--button type="button" class="btn btn-default" id="2080" value="2080">2080</button-->
+                        </div>
+                    </div>
+                    <!-- END MAIN MENU -->
+
+
+
+
+                    <!-- END SOCIAL ICONS -->
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- END NAVIGATION -->
+
+
+
+    <!-- Full Page Image Header Area -->
+    <div id="page-welcome" style="margin-top:50px;">
+        <div id="map3d" style="z-index:-5;position:static;width:100%;height:100%;"></div>
+
+    </div>
+    <!-- Sidebar iFrame Shim -->
+    <div class="iframe-container2" id="sidebar-iframe">
+        <div class="content-container">
+            <!-- content goes here -->
+            <div id="sidebar-wrapper">
+                <ul class="sidebar-nav">
+
+                    <h3>Range Projections</h3>
+                    <br>
+                    <h4><b>Species:</b></h4>
+                    <li>
+                        <form style="text-indent: 0; line-height:20px;" id="urlform">
+
+                            <input type="radio" name="species" value="abies_lasiocarpa" checked="checked"><b>Subalpine fir</b>  <i>Abies lasiocarpa</i>
+                            <br>
+                            <input type="radio" name="species" value="juniperus_scopulorum"><b>Rocky Mountain Juniper</b>  <i>Juniperus scopulorum</i>
+                            <br>
+                            <input type="radio" name="species" value="picea_engelmannii"><b>Engelmann spruce</b>  <i>Picea engelmannii</i>
+                            <br>
+                            <input type="radio" name="species" value="pinus_contorta"><b>Lodgepole pine</b>  <i>Pinus contorta</i>
+                            <br>
+                            <input type="radio" name="species" value="pinus_edulis"><b>Pi&#xF1on pine</b>  <i>Pinus edulis</i>
+                            <br>
+                            <input type="radio" name="species" value="pinus_ponderosa"><b>Ponderosa pine</b>  <i>Pinus ponderosa</i>
+                            <br>
+                            <input type="radio" name="species" value="populus_tremuloides"><b>Quaking aspen</b>  <i>Populus tremuloides</i>
+                            <br>
+                            <input type="radio" name="species" value="pseudotsuga_menziesii"><b>Douglas fir</b>  <i>Pseudotsuga menziesii</i>
+                            <br>
+                            <input type="radio" name="species" value="quercus_gambelii"><b>Gambel oak</b>  <i>Quercus gambelii</i>
+                            <br>
+
+                            <!--input type="button" id="time" class="btn btn-primary" value="current"><br-->
+                            <input type="checkbox" class="cycle" id="cycleMaps"><strong>Slideshow</strong>
+                            <input type="checkbox" class="test" id="testNewMaps"><strong>Prototype</strong>
+                            <br>
+
+                            <div class="btn-group-vertical">
+
+                                <input type="button" class="btn btn-default btn-sm" id="change" value="View Change" onclick="viewChange()">
+                            </div>
+                        </form>
+                    </li>
+                    <li class="divider"></li>
+                    <li class="nav-header" style="text-indent:0;">Global Climate Model:
+                        <select id="gcm">
+                            <option value="miroc5">MIROC5</option>
+                            <option value="mpi_esm">MPI-ESM-LR</option>
+                            <option value="hadgem2">HadGEM2-ES</option>
+                        </select>
+                    </li>
+                    <li class="divider"></li>
+                    <li class="nav-header" style="text-indent:0;">Carbon Scenario:
+                        <select id="rcp">
+                            <option value="rcp26">2.6</option>
+                            <option value="rcp45" selected="selected">4.5</option>
+                            <option value="rcp85">8.5</option>
+                        </select>
+                    </li>
+                    <li class="divider"></li>
+                    <label>Adjust Transparency:
+                        <input type="text" id="amount" style="border: 0; background: transparent; color:#f6931f; font-weight: bold;" />
+                    </label>
+                    <div id="slider-container" style="width:250px !important;"></div>
+
+                    <li class="nav-header" style="text-indent:0;">Reference Data:</li>
+                    <fieldset id="layerArray">
+                        <label>
+                            <input type="checkbox" class="ref" id="showStates" value="LAYER_BORDERS">Borders
+                        </label>
+                        <label>
+                            <input type="checkbox" class="ref" id="showRoads" value="LAYER_ROADS">Roads
+                        </label>
+                        <label>
+                            <input type="checkbox" class="little" id="little">Range
+                        </label>
+                    </fieldset>
+                    <li class="divider"></li>
+                    <form action='javascript:submitLocation();void(0);'>
+                        <input type="text" id="address"></input>
+                        <button type="submit" class="btn btn-default">Go to</button>
+                    </form>
+                    <li class="divider"></li>
+                    <h5><b>Suitability:</b></h5>
+                    <div class="container" id="legendDiv"></div>
+                    <p style="text-align:left;">Low<span style="margin-left: 175px;">High</span>
+                    </p>
+
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+
+
+                </ul>
+            </div>
+        </div>
+        <iframe class="iframeshim" frameborder="0" scrolling="no">
+            <html>
+
+            <head></head>
+
+            <body></body>
+
+            </html>
+        </iframe>
+
+    </div>
+    <!-- PAGE | WORK -->
+    <div class="pages page-work" id="page-work">
+        <div class="container">
+            <!-- Header -->
+            <header>
+                <br>
+                <br>
+                <br>
+                <h1 class="line-divider">Why Forest Forecasts?</h1>
+                <!-- Short Background for Project-->
+                <div class="row">
+                    <div class="span8 offset2">
+                        <p>Forests in western North America are important from hydrological, commercial, ecological, and cultural 
+							points of view. Throughout the west, human populations depend on snow-pack in forested areas for 
+							drinking water. Forested areas literally act as “water towers” for near-by lower-elevation, semi-arid 
+							and arid areas where millions live. Recent studies show that forests in western North America are 
+							undergoing profound change: large-scale forest die-offs have been documented<sup>1</sup>, as
+							well as background mortality rates twice their historical levels<sup>2</sup>. This mortality
+							is associated with climate change, via elevated temperatures and consequently increased drought 
+							stress, as well as insect outbreaks<sup>1,3-6</sup>. Insect outbreaks<sup>4</sup> and fire<sup>7</sup> are influenced by climate, thus climate change is both a direct and indirect driver of forest stress.
+							<strong>The consensus from recent models is that about half the coniferous forest area in western North 
+							America will be lost to climate change over the course of the twenty-first century, from 24% of the 
+							total area, to 11%, with much of this area replaced by shrub or grasslands<sup>8</sup>.</strong></p>
+                        <br>
+                        <p>We need new ways of visualizing and communicating about the changes happening in western forests, 
+						because they are occurring on a scale that is continental, and the consequences for human well-being 
+						are pervasive. For the sake of all the benefits that forests offer - ecosystem services, renewable natural 
+						resources (water, wood), recreation, as well as natural and cultural heritage - we are in urgent need of 
+						forecasts of their response to climate change. These visualization tools allow us to see what the future 
+						might realistically look like; they also stimulate conversations about what we want to do – what actions 
+						we might take to influence what that future will look like.
+                        </p>
+                        <br>
+                    </div>
+                </div>
+                <h1>Species</h1>
+                <!-- Short desciption about Work in general -->
+                <div class="row">
+                    <div class="span8 offset2">
+                        <p>We selected nine species that are dominant in forests of the Rocky Mountain region and throughout western North America, across a range of forest types. These include woodland species like Rocky Mountain juniper, Gambel oak, and Pi&#xF1on pine, mid-elevation species like Ponderosa pine and Douglas-fir, and high elevation species like Aspen, Engelmann spruce, Lodgepole pine, and Subalpine fir.
+
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Sub menu -->
+                <!-- 
+                Params: 
+                    plugin-filter: Defines links for filtering.
+                -->
+
+            </header>
+            <!-- End Header -->
+
+
+        </div>
+    </div>
+    <!-- END PAGE | WORK -->
+    <!-- PAGE | CLIENTS -->
+    <div class="pages page-clients" id="page-clients">
+        <div class="container">
+            <!-- Article -->
+            <article>
+                <!-- Portfolio items
+                    Params: 
+                        plugin-filter-elements: Defines items for filtering, each item has class which defines filter value.
+                        portfolio-items: Customise portfolio items for hover effect.
+                -->
+                <ul class="thumbnails plugin-filter-elements portfolio-items">
+                    <li class="span4">
+                        <a title="By Walter Siegmund (Own work) [GFDL (http://www.gnu.org/copyleft/fdl.html), CC-BY-SA-3.0 (http://creativecommons.org/licenses/by-sa/3.0/) or CC-BY-2.5 (http://creativecommons.org/licenses/by/2.5)], via Wikimedia Commons" href="http://commons.wikimedia.org/wiki/File%3AAbies_lasiocarpa_26011.JPG">
+                            <img width="256" alt="Abies lasiocarpa 26011" src="//upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Abies_lasiocarpa_26011.JPG/256px-Abies_lasiocarpa_26011.JPG" />
+                        </a>
+                        <h4>Subalpine fir</h4>
+                    </li>
+                    <li class="span4">
+                        <a title="By pasa47 (Rock and Pines) [CC-BY-2.0 (http://creativecommons.org/licenses/by/2.0)], via Wikimedia Commons" href="http://commons.wikimedia.org/wiki/File%3AJuniperus_scopulorum_Garden_of_the_Gods.jpg">
+                            <img width="256" alt="Juniperus scopulorum Garden of the Gods" src="//upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Juniperus_scopulorum_Garden_of_the_Gods.jpg/256px-Juniperus_scopulorum_Garden_of_the_Gods.jpg" />
+                        </a>
+                        <h4>Rocky Mountain Juniper
+                    </li>
+                    <li class="span4">
+<a title="By Glennfcowan (Own work) [GFDL (http://www.gnu.org/copyleft/fdl.html) or CC-BY-3.0 (http://creativecommons.org/licenses/by/3.0)], via Wikimedia Commons" href="http://commons.wikimedia.org/wiki/File%3APike_National_Forest.jpg"><img width="256" alt="Pike National Forest" src="//upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Pike_National_Forest.jpg/256px-Pike_National_Forest.jpg"/></a>                    
+					<h4>Engelmann Spruce</h4>
+                    </li>
+                    <li class="span4">
+                        <a title="By Walter Siegmund (Own work) [GFDL (http://www.gnu.org/copyleft/fdl.html), CC-BY-SA-3.0 (http://creativecommons.org/licenses/by-sa/3.0/) or CC-BY-2.5 (http://creativecommons.org/licenses/by/2.5)], via Wikimedia Commons" href="http://commons.wikimedia.org/wiki/File%3APinus_contorta_28266.JPG">
+                            <img width="256" alt="Pinus contorta 28266" src="//upload.wikimedia.org/wikipedia/commons/thumb/8/83/Pinus_contorta_28266.JPG/256px-Pinus_contorta_28266.JPG" />
+                        </a>
+                        <h4>Lodgepole pine</h4>
+                    </li>
+                    <li class="span4">
+                        <a title="By Ben Javelina from The Suburbs of Angels, USA (Grand Canyon South Rim - Oct 2007 - 055) [CC-BY-SA-2.0 (http://creativecommons.org/licenses/by-sa/2.0)], via Wikimedia Commons" href="http://commons.wikimedia.org/wiki/File%3APinus_edulis_Grand_Canyon_South_Rim.jpg">
+                            <img width="256" alt="Pinus edulis Grand Canyon South Rim" src="//upload.wikimedia.org/wikipedia/commons/thumb/4/46/Pinus_edulis_Grand_Canyon_South_Rim.jpg/256px-Pinus_edulis_Grand_Canyon_South_Rim.jpg" />
+                        </a>
+                        <h4>Pi&#xF1on pine</h4>
+                    </li>
+                    <li class="span4">
+                        <a title="By Walter Siegmund (Own work) [GFDL (http://www.gnu.org/copyleft/fdl.html), CC-BY-SA-3.0 (http://creativecommons.org/licenses/by-sa/3.0/) or CC-BY-2.5 (http://creativecommons.org/licenses/by/2.5)], via Wikimedia Commons" href="http://commons.wikimedia.org/wiki/File%3APinus_ponderosa_15932.JPG">
+                            <img width="256" alt="Pinus ponderosa 15932" src="//upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Pinus_ponderosa_15932.JPG/256px-Pinus_ponderosa_15932.JPG" />
+                        </a>
+                        <h4>Ponderosa pine</h4>
+                    </li>
+                    <li class="span4">
+                        <a title="By Walter Siegmund (Own work) [GFDL (http://www.gnu.org/copyleft/fdl.html), CC-BY-SA-3.0 (http://creativecommons.org/licenses/by-sa/3.0/) or CC-BY-2.5 (http://creativecommons.org/licenses/by/2.5)], via Wikimedia Commons" href="http://commons.wikimedia.org/wiki/File%3APopulus_tremuloides_8165.jpg">
+                            <img width="256" alt="Populus tremuloides 8165" src="//upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Populus_tremuloides_8165.jpg/256px-Populus_tremuloides_8165.jpg" />
+                        </a>
+                        <h4>Quaking aspen</h4>
+                    </li>
+                    <li class="span4 mix photography illustration">
+                        <a title="By Walter Siegmund (Own work) [GFDL (http://www.gnu.org/copyleft/fdl.html), CC-BY-SA-3.0 (http://creativecommons.org/licenses/by-sa/3.0/) or CC-BY-2.5 (http://creativecommons.org/licenses/by/2.5)], via Wikimedia Commons" href="http://commons.wikimedia.org/wiki/File%3APseudotsuga_menziesii_28021.JPG">
+                            <img width="256" alt="Pseudotsuga menziesii 28021" src="//upload.wikimedia.org/wikipedia/commons/thumb/3/37/Pseudotsuga_menziesii_28021.JPG/256px-Pseudotsuga_menziesii_28021.JPG" />
+                        </a>
+                        <h4>Doug fir</h4>
+                    </li>
+                    <li class="span4">
+                        <a title="By Public Domain [CC-BY-2.0 (http://creativecommons.org/licenses/by/2.0)], via Wikimedia Commons" href="http://commons.wikimedia.org/wiki/File%3AQuercus_gambelii_Grand_Canyon_1.jpg">
+                            <img width="512" alt="Quercus gambelii Grand Canyon 1" src="//upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Quercus_gambelii_Grand_Canyon_1.jpg/512px-Quercus_gambelii_Grand_Canyon_1.jpg" />
+                        </a>
+                        <h4>Gambel oak</h4>
+                    </li>
+                </ul>
+            </article>
+            <!-- End Article -->
+
+
+        </div>
+    </div>
+    <!-- END PAGE | CLIENTS -->
+
+    <!-- PAGE | FEATURES  -->
+    <div class="pages white paralax page-features" id="page-features">
+        <div class="overlay"></div>
+        <div class="container">
+            <!-- Header -->
+            <header>
+                <h4 class="line-divider">Climate Change Scenarios</h4> 
+                <h1>Representative Concentration Pathways (RCPs)</h1>
+                <div class="row">
+                    <div class="span8 offset2">
+                        <p>Our forecasts are based on three carbon scenarios - called "representative concentration pathways" (rcp's) - used by 
+						all the major climate modeling research centers around the world (CMIP5). These rcp's are greenhouse gas trajectories 
+						that describe possible future climates, depending on how much greenhouse gases are emitted in the coming years. 
+						The rcp's (2.6, 4.5, 8.5) are named after the expected increase in radiative forcing in 2100 compared to pre-industrial 
+						values, in units of watts per meter squared (W/m2).</p>
+
+                    </div>
+                </div>
+            </header>
+            <!-- End Header -->
+
+            <!-- Article -->
+            <article>
+                <!-- Features blocks -->
+                <div class="row-fluid">
+                    <div class="span4 center">
+                        <img class="img-circle" src="img/rcp26.png" alt="rcp26">
+                        <h5>Best Case Emission Scenario</h5>
+                        <p class="smallFontBy08 cutBy10">Emission pathway is representative of scenarios where humanity is able to lower greenhouse gas concentration levels. It is a “peak-and-decline” scenario where
+                                            we start reducing greenhouse gas emissions drastically. Here the impact of greenhouse gas emissions reach their peak by mid-century, and the decrease and eventually returns to "2.6 W/m2" by 2100. In order to
+                                            reach such radiative forcing levels, greenhouse gas emissions (and indirectly emissions of air pollutants) are reduced substantially, over time (Van Vuuren et al. 2007a).</p>
+                    </div>
+                    <div class="span4 center">
+                        <img class="img-circle" src="img/rcp45.png" alt="rcp45">
+                        <h5>Stabilization Scenario</h5>
+                        <p class="smallFontBy08 cutBy10">Greenhouse emissions are stabilized shortly after 2100, without overshooting the long-run radiative forcing target level (Clarke et al. 2007; Smith and Wigley
+                                            2006; Wise et al. 2009).</p>
+                    </div>
+                    <div class="span4 center">
+                        <img class="img-circle" src="img/rcp85.png" alt="rcp85">
+                        <h5>Worst Case Emission Scenario</h5>
+                        <p class="smallFontBy08 cutBy10">Under this scenario, greenhouse gas emissions continue to increase over time, representative of scenarios in the literature that lead to high greenhouse gas concentration
+                                            levels (Riahi et al. 2007).</p>
+                    </div>
+                </div>
+            </article>
+            <!-- End Article -->
+        </div>
+    </div>
+    <!-- END PAGE | FEATURES -->
+    <!-- PAGE | ABOUT -->
+    <div class="pages page-about" id="page-about">
+        <div class="container">
+            <!-- Header -->
+            <header>
+                <h4 class="line-divider">About</h4>
+                <h1>Partners</h1>
+                <div class="row">
+                    <div class="span8 offset2">
+                        <p>This research is made possible by the following organizations:</p>
+                    </div>
+                </div>
+            </header>
+            <!-- End Header -->
+
+            <!-- Article -->
+            <article>
+                <!-- List of people and description with their contact details which are visable on hover -->
+                <ul class="thumbnails about-items">
+                    <li class="span4 center">
+                        <div class="item">
+                            <!-- Team member image -->
+                            <a href="http://www.aspennature.org"><img class="img-rounded" src="img/ACES.png" alt="ACES"></a>
+                        </div>
+
+                    </li>
+                    <li class="span4 center">
+                        <div class="item">
+                            <a href="http://ltrr.arizona.edu"><img class="img-rounded" src="img/ltrr.png" alt="Tree-Ring"></a>
+                        </div>
+                    </li>
+                    <li class="span4 center">
+                        <div class="item">
+                            <a href="http://cos.arizona.edu"><img class="img-rounded" src="img/UAsci.png" alt="UAsci"></a>
+                        </div>
+                    </li>
+                    <li class="span4 center">
+                        <div class="item">
+                            <a href="http://www.iplantcollaborative.org"><img class="img-rounded" src="img/iplant_logo_300.jpg" alt="iPlant"></a>
+                        </div>
+                    </li>
+                </ul>
+            </article>
+            <!-- End Article -->
+        </div>
+    </div>
+    <!-- END PAGE | ABOUT -->
+    <!-- PAGE | MODELING -->
+    <div class="pages page-blog" id="page-modeling">
+        <div class="container">
+            <!-- Header -->
+            <header>
+                <h4 class="line-divider">Modeling</h4>
+                <h1>Background</h1>
+                <div class="row">
+                    <div class="span8 offset2">
+                        <p>Landscape suitability was modeled used 1) occurrence data derived from the Botanical Information and 
+						Ecology Network (BIEN), 2) digital maps of climate, and 3) a statistical model to associate these two 
+						types of information. We describe each of these in more detail.</p><br>
+						<p>Occurrence data are records of a species occurring in a particular place,<i>i.e.</i>, latitude and longitude. They 
+						are typically derived from natural history collections (herbarium specimens), but in the case of BIEN, also 
+						include the locations of U.S. Forest Service forest inventory plots (Forest Inventory and Analysis, FIA), 
+						and other published sources of data (see BIEN).</p><br>
+						<p>Two types of digital maps of climate were used – current climate and future climate. Current climate 
+						data were used to build a model of a species’ climatic niche and predict its geographic distribution; 
+						future climate data were used to predict the species’ geographic distribution under future climate 
+						scenarios. We used digital maps of climate from two sources, worldclim and NASA. Both are statistically-	
+						downscaled and bias-corrected, based on the latest climate modeling results from the IPCC (AR5). The 
+						climate variables used were the 19 bioclim variables, described here, which capture major dimensions of 
+						climate expected to be important for the survival, growth, and reproduction of many organisms – mean 
+						annual temperature, mean annual precipitation, precipitation in the hottest three months of the year, 
+						mean temperature in the coldest three months of the year, etc.</p><br>
+						<p>Statistical modeling of climatic niches and geographical distributions was conducted using the freely-
+						available algorithm Maxent<sup>9</sup>. Maxent employs a maximum entropy method to model a species'
+						distribution; it has performed well in comparisons among species distribution modeling methods<sup>10</sup>. In
+						essense, Maxent uses the data on what climate is like where the species is known to occur to build a 
+						statistical model that predicts the climatic suitability of the rest of the landscape for that species.
+						</p>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <!-- END PAGE | MODELING -->
+
+    <!-- PAGE | REFERENCES -->
+    <div class="pages black-bg white page-contact" id="page-references">
+        <div class="container">
+            <!-- Header -->
+            <header>
+                <h4 class="line-divider">REFERENCES</h4>
+                <h1>Citations</h1>
+                <div class="row">
+                    <div class="span8 offset2">
+                        <p>1. Allen, C. D. et al. 2010. A global overview of drought and heat-induced tree mortality reveals emerging climate change risks for forests. For. 
+						Ecol. Manage 259: 660–684.</p>
+						<p>2. van Mantgem, P. J. et al. 2009. Widespread increase of tree mortality rates in the western United States. Science 323:521–524.</p>
+						<p>3. Breshears, D. D. et al. 2005. Regional vegetation die-off in response to global-change-type drought. Proc. Natl. Acad. Sci. USA 102: 144–148.</p>
+						<p>4. McDowell, N. G., D. J. Beerling, D. D. Breshears, R. A. Fisher, K. F. Raffa, and M. Stitt. 2011. The interdependence of mechanisms 
+						underlying climate-driven vegetation mortality. Trends Ecol. Evol. 26: 523–532, doi:10.1016/j.tree.2011.06.003.</p>
+						<p>5. Das, A. J., N. L. Stephenson, A. Flint, T. Das, and P. J. van Mantgem. 2013. Climate correlates of tree mortality in water- and energy-limited 
+						forests. PLoS One 8: e69917.</p>
+						<p>6. Williams AP, Allen CD, Macalady AK, Woodhouse C, Meko D, Allen CD, Swetnam TW, Cook ER, Griffin D, Rauscher SA, Seager R, Dean 
+						J, Grissino-Mayer H, Gangodagamage C, Cai M, McDowell N. 2013. Temperature as a potent driver of regional forest-drought stress and tree 
+						mortality. Nature Climate Change 3: 292–297.</p>
+						<p>7. Stephens, S. L., J. K. Agee, P. Z. Fule, M. P. North, W. H. Romme, T. W. Swetnam, and M. G. Turner. 2013. Managing Forests and Fire in 
+						Changing Climates. Science 342:41-42.</p>
+						<p>8. Jiang, X., S. A. Rauscher, T. D. Ringler, D. M. Lawrence, A. Park Williams, C. D. Allen, A. L. Steiner, D. M. Cai, and N. G. McDowell. 2013. 
+						Projected future changes in vegetation in western North America in the twenty-first century. Journal of Climate 26:3671-3687.</p>
+						<p>9. Phillips, S. J., R. P. Anderson, and R. E. Schapire. 2006. Maximum entropy modeling of species geographic distributions. Ecological 
+						Modelling 190:231-259.</p>
+						<p>10. Elith, J., C. H. Graham, R. P. Anderson, M. Dudik, S. Ferriere, A. Guisan, R. J. Hijmans, F. Huettmann, J. R. Leathwick, A. Lehmann, 
+						J. Li, L. G. Lohmann, B. A. Loiselle, G. Manion, C. Moritz, M. Nakamura, Y. Nakazawa, J. McC. Overton, A. T. Peterson, S. J. Phillips, K. 
+						Richardson, R. Scachetti-Pereira, R. E. Shapire, J. Soberon, S. Williams, M. S. Wisz, and N. E. Zimmerman. 2006. Novel methods improve 
+						prediction of species’ distributions from occurrence data. Ecography 29: 129-151.</p>
+                    </div>
+                </div>
+            </header>
+            <!-- End Header -->
+        </div>
+        <!-- /Full Page Image Header Area -->
+        <!-- /Side Menu -->
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <script src="bootstrap/js/bootstrap.js"></script>
+        <script src="bootstrap/js/select2-3.4.5/select2.js"></script>
+
+        <script type="text/javascript" src="full_test.js"></script>
+        <script>
+            $("#menu-close").click(function (e) {
+                e.preventDefault();
+                $("#sidebar-wrapper").toggleClass("active");
+                $("#menu-toggle").show();
+                $("#sidebar-iframe").hide();
+            });
+        </script>
+        <script>
+            $("#menu-toggle").click(function (e) {
+                e.preventDefault();
+                $("#sidebar-wrapper").toggleClass("active");
+                $("#menu-toggle").hide();
+                $("#sidebar-iframe").show();
+            });
+        </script>
+
+
+
+
+    </div>
+    <!-- INITIALIZE -->
+    <!-- PLUGINS -->
+    <script src="assets/js/plugins/jquery.bxslider.min.js" type="text/javascript"></script>
+    <script src="assets/js/plugins/jquery.centralized.min.js" type="text/javascript"></script>
+    <script src="assets/js/plugins/jquery.fixedonlater.min.js" type="text/javascript"></script>
+    <script src="assets/js/plugins/jquery.hashloader.min.js" type="text/javascript"></script>
+    <script src="assets/js/plugins/jquery.mixitup.min.js" type="text/javascript"></script>
+    <script src="assets/js/plugins/jquery.nav.min.js" type="text/javascript"></script>
+    <script src="assets/js/plugins/jquery.parallax-1.1.3.min.js" type="text/javascript"></script>
+    <script src="assets/js/plugins/jquery.responsivevideos.min.js" type="text/javascript"></script>
+    <script src="assets/js/plugins/jquery.scrollTo.min.js" type="text/javascript"></script>
+    <script src="assets/js/plugins/jquery.tweet.min.js" type="text/javascript"></script>
+    <script src="assets/js/plugins/jquery.tweetCarousel.min.js" type="text/javascript"></script>
+
+    <!--script src="assets/js/application/application.min.js" type="text/javascript"></script-->
+
+</body>
+
+</html>
