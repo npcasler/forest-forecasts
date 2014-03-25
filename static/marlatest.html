@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Marla Test</title>
+	
+	<!-------Java script includes ------>
+	
+
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<!--<script src="http://api.tiles.mapbox.com/mapbox.js/v1.5.0/mapbox.js"></script>-->
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script type="text/javascript"src="static/cities_sm.js"></script>
+	<script type="text/javascript"src="static/cities.js"></script>
+	<script type="text/javascript"src="us-states.js"></script>
+
+	
+	<style> 
+	html {
+		height: 100%;
+		padding: 0;
+		margin: 0;
+	}
+	body {
+		height: 100%;
+		padding: 0; 
+		margin: 0;
+	}
+	#map { 
+		height: 100%;
+	}
+
+
+</style>	
+	
+	
+	<!------CSS files include------->
+	<link rel="stylesheet" href="./static/markercluster.css"/>
+	<link rel="stylesheet" href="./static/markercluster.default.css"/>
+	<link rel="stylesheet" href="http://api.tiles.mapbox.com/mapbox.js/v1.5.0/mapbox.css"/>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.css">
+	<link rel="stylesheet"  type="text/css" href="http://bootswatch.com/amelia/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap-responsive.css"> 
+	
+	
+</head>	
+<body onload="init()">
+	<script src="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.js"></script>	
+	<script src="./static/leaflet.markercluster-src.js"></script>
+	
+	
+	<script>
+	function init() {
+	var map = new L.Map("map",{
+		center: [37.8, -96.9],
+		zoom: 4
+	})	
+	.addLayer(new L.tileLayer("http://{s}.tiles.mapbox.com/v3/npcasler.map-hoiu9vkw/{z}/{x}/{y}.png"));
+	
+	//function for adding feature interaction
+	var geoJson;
+	
+	function getColor(d) {
+		return d > 1000 ? '#872187' :
+			   d > 500  ? '#A41CC6' :
+			   d > 200  ? '#BA21E0' :
+			   d > 100  ? '#CB59E8' :
+			   d > 50   ? '#D881ED' :
+			   d > 20   ? '#EFCDF8' :
+			   d > 10   ? '#E697E6' :
+						  '#FFEDA0';
+	}
+	
+	function style (feature) {
+		return{
+			weight: 2,
+			opacity: 1,
+			color: 'white',
+			dashArray: '3',
+			fillOpacity: 0.7,
+			fillColor: getColor(feature.properties.density)
+			
+		};
+	}
+
+	
+	function highlightFeature(e) {
+		var layer = e.target;
+		
+		layer.setStyle({
+			weight: 5,
+			color: '#666',
+			dashArray: '',
+			fillOpacity: 0.7
+		});
+
+		if (!L.Browser.ie && !L.Browser.opera) {
+			layer.bringToFront();
+		}
+	}
+var geoJson;
+
+function resetHighlight(e) {
+		geoJson.resetStyle(e.target);
+	}
+
+function zoomToFeature(e) {
+		map.fitBounds(e.target.getBounds());
+	}
+
+	function onEachFeature(feature, layer) {
+		layer.on({ 
+			mouseover: highlightFeature,
+			mouseout: resetHighlight,
+			click:zoomToFeature
+	});
+	}
+	
+	geoJson = L.geoJson(statesData, {
+		style: style,
+		onEachFeature: onEachFeature,
+	}).addTo(map);	
+	
+	
+	var markers = new L.MarkerClusterGroup({
+		maxClusterRadius:150
+		});
+	
+	/*for (var i = 0; i < cities.length; i++) {
+		var a = cities[i];
+		var name = a[2]
+		var marker = L.marker(new L.LatLng(a[0], a[1]), [name:name] {
+			marker.bindPopup(name);
+			markers.addLayer(marker);
+		});
+
+	}*/
+	var markerOptions = {
+		radius: 6,
+		fillColor: '#000000',
+		color: '000',
+		opacity: 1
+	};
+var cities_lyr = L.geoJson(cities, {
+		onEachFeature: function (feature, layer)
+			{
+			var name = feature.properties.CITY_NAME;
+			layer.bindPopup(name);
+			}
+		});
+cities_lyr.eachLayer(function (i) {markers.addLayer(i); });
+/*
+var towns_1yr = L.geoJson(cities2, {
+			pointToLayer: function (feature, latlng) {
+				return L.circleMarker(latlng, markerOptions);
+			},
+		onEachFeature: function (feature, layer)
+			{
+			var name = feature.properties.CITY_NAME;
+			layer.bindPopup(name);
+			}
+		});
+towns_1yr.eachLayer(function (i) {markers.addLayer(i); });*/		
+map.addLayer(markers);
+	}
+			
+	//
+	//var cities = L.geoJson(points, {
+		//onEachFeature: function (feature, layer)
+		//{
+		//layer.bindPopup("popup text");
+		//}
+		//});
+	//markers.addLayer(cities);
+	//map.addLayer(markers);
+	//map.fitBounds(marker.getBounds());
+	
+	
+	
+	//for (var i = 0; i < addressPoints.length; i++) {
+		//var a = addressPoints[i];
+		//var title = a[2];
+		//var marker = L.marker(new L.LatLng(a[0], a[1], {
+			//icon: L.mapbox.marker.icon({'marker-symbol': 'post', 'marker-color': '0044FF'}),
+			//title: title
+		//});
+		//marker.bindPopup(title);
+		//markers.addLayer(marker);
+		
+	//map.addLayer(markers);
+	
+	
+	//town 1yr.eachLayer{
+		//(function (i)(markers.addLayer(i);});
+	
+	
+	
+	
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	//L.geoJson(cities, {
+		//style:function (feature) {
+			//return feature.properties && feature.properties.style;
+		//},		
+	//}).addTo(map);
+	
+	//}	
+
+	
+	
+	
+	
+	
+	//geoJson = L.geoJson(cities,{
+		//style: style,
+		//onEachFeature: OnEachFeature,
+	//}).addTo(map);
+	//};
+	
+		
+		
+			
+			
+	
+	//adding geoJson feature 
+	//	var myLayer = L.geoJson().addTo(map);
+	//	$.getJSON("./static/volcanoes.js"), function(json){
+	//		myLayer.addData(json);
+	//	};
+	
+	//var points = L.geoJson(volcanoes, {
+		//style: function (feature) {
+			//return {
+				//stroke: false,
+				//fillColor: '#DFA800',
+				//fillOpacity: 0.8
+			//};
+		//},
+		//}).addTo(map);
+	
+	//load the geojson to map with marker styling
+	/*onSuccess: function initCB(response) {
+		var volcanoes = L.geoJson(response, {
+			style: function (feature) {
+				return {
+					stroke: false,
+					fillColor: '#DFA800',
+					fillOpacity: 0.8
+				};
+			},
+			onEachFeature: function (feature, layer) {
+				popupOptions = {maxWidth: 200};
+				layer.bindPopup("<b>Volcano name:</b> " + feature.properties.name +
+					"<br><b>Last Eruption: </b>" + feature.properties.known_erupt
+					,popupOptions);
+			}
+		}).addTo(map);
+	}*/
+//} 	
+		
+		
+		//var geojsonFeature = {
+			//"type": "Feature",
+			//"properties": {
+			//"name": "Volcanos"
+		//},	
+		//"geometry":{
+			//"type": "Point"
+		//}
+	//};
+	
+	//adding Popup from geo Json feature that displays the volcano name and last eruption
+	
+
+</script>
+    <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">United States</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Volcanos</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div><!-- /.nav-collapse -->
+      </div><!-- /.container -->
+    </div><!-- /.navbar -->
+
+    <div class="container">
+
+      <div class="row row-offcanvas row-offcanvas-right">
+
+        <div class="col-xs-12 col-sm-9">
+          <p class="pull-right visible-xs">
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+          </p>
+		  <div class="container-fill" style="width: 100%; height: 500px">
+			<div id="map" style="width: 100%; height: 100%"></div>
+		  </div>
+          <div class="row">
+            <div class="col-6 col-sm-6 col-lg-4">
+              <h2>Map</h2>
+              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+              <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+            </div><!--/span-->
+            <div class="col-6 col-sm-6 col-lg-4">
+              <h2>Heading</h2>
+              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+              <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+            </div><!--/span-->
+            <div class="col-6 col-sm-6 col-lg-4">
+              <h2>Heading</h2>
+              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+              <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+            </div><!--/span-->
+            <div class="col-6 col-sm-6 col-lg-4">
+              <h2>Heading</h2>
+              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+              <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+            </div><!--/span-->
+            <div class="col-6 col-sm-6 col-lg-4">
+              <h2>Heading</h2>
+              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+              <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+            </div><!--/span-->
+            <div class="col-6 col-sm-6 col-lg-4">
+              <h2>Heading</h2>
+              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+              <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+            </div><!--/span-->
+          </div><!--/row-->
+        </div><!--/span-->
+
+        <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+          <div class="list-group">
+            <a href="#" class="list-group-item active">Change Country</a>
+            <a href="#" class="list-group-item">zzzz</a>
+            <a href="#" class="list-group-item">Link</a>
+            <a href="#" class="list-group-item">Link</a>
+            <a href="#" class="list-group-item">Link</a>
+            <a href="#" class="list-group-item">Link</a>
+            <a href="#" class="list-group-item">Link</a>
+            <a href="#" class="list-group-item">Link</a>
+            <a href="#" class="list-group-item">Link</a>
+            <a href="#" class="list-group-item">Link</a>
+          </div>
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+	  
+      <footer>
+        <p>&copy; Company 2013</p>
+      </footer>
+
+    </div>	
+	<script src="bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+
+
+
