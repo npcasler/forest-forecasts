@@ -71,7 +71,12 @@ function init() {
         .offset({
             top: 50
         });
-
+    //Hide the sidebar when the user scrolls off the map
+    $( window ).scroll(function() {
+	if($("#sidebar-wrapper").hasClass("active")) {
+	  $("#menu-close").trigger("click");
+	}
+    });
     //toggle function for the time button
     $('#time button').click(function () {
         //if the time value is 'current' call the current function
@@ -121,7 +126,7 @@ function init() {
 
     $("#cycleMaps").change(function () {
         if (this.checked) {
-            myTimer = setInterval('cycleLayers()', 1000);
+            myTimer = setInterval('cycleLayers()', 1200);
         } else {
             clearInterval(myTimer);
         }
@@ -168,7 +173,19 @@ function init() {
         $('#period').val('20' + $('#time-slider').slider("value") + '0');
     });
 
-
+    $("#menu-close").click(function (e) {
+	e.preventDefault();
+	$("sidebar-wrapper").removeClass("active");
+	$("#menu-toggle").show();
+	$("#sidebar-iframe").hide();
+    });
+    
+    $("#menu-toggle").click(function (e) {
+	e.preventDefault();
+	$("#sidebar-wrapper").addClass("active");
+	$("#menu-toggle").hide();
+	$("#sidebar-iframe").show();
+    });
 
 
     //end init function
@@ -186,6 +203,8 @@ function initCB(instance) {
     ge.getNavigationControl().getScreenXY().setXUnits(ge.UNITS_INSET_PIXELS);
     ge.getNavigationControl().getScreenXY().setYUnits(ge.UNITS_INSET_PIXELS);
 
+    //Inaantiate the utility library
+    //var gex = new GEarthExtenstions(ge);
 
     //create a folder to hold the various features and opacity values
     folderCur = ge.createFolder('');
@@ -236,11 +255,23 @@ function initCB(instance) {
     folderRef.setOpacity(1);
     //add first layer and zoom to extent
     addKmlFromUrl('current/abies_lasiocarpa', true);
-    addKmlFromUrl('maxent/' + $('#gcm').val() + '/' + $('#rcp').val() + '/2050/abies_lasiocarpa', false, 1);
-    addKmlFromUrl('maxent/' + $('#gcm').val() + '/' + $('#rcp').val() + '/2070/abies_lasiocarpa', false, 2);
+    addKmlFromUrl('maxent/' + $('#gcm').val() + '/' + $('#rcp').val() + '/2050/abies_lasiocarpa', false, 4);
+    addKmlFromUrl('maxent/' + $('#gcm').val() + '/' + $('#rcp').val() + '/2070/abies_lasiocarpa', false, 6);
 
+/*
+    var numLines = 0;
 
+    gex.dom.walk({
+	rootObject: ge,
+	visitCallback: function() {
+	    // 'this' is the current DOM node being visited
+	    if ('getType' in this && this.getType() == 'KmlLineString')
+	      ++numLines;
+	}
+    });
 
+    alert('There are ' + numLines + ' lines.');
+*/
 
 }
 
@@ -323,12 +354,15 @@ function switchTime() {
 		if (i === mapIndex - 1) {
 			activeFolder = folders[i];
 		} else {
-			folders[i].setOpacity(0);
+		  if (folders[i].getOpacity() !== 0.00){
+		    kmlFadeOut(folders[i]);
+		  }
+		  //folders[i].setOpacity(0);
 		}
 	}
-	
-	activeFolder.setOpacity($('#slider-container').slider('value') / 100);
-	
+		
+	//activeFolder.setOpacity($('#slider-container').slider('value') / 100);
+	kmlFadeIn(activeFolder);
 
 		
 
@@ -337,21 +371,25 @@ function switchTime() {
 
     if (timeVar == 0) {
         activeFolder = folderCur;
-        folder50.setOpacity(0);
-        folder70.setOpacity(0);
+        //folder50.setOpacity(0);
+        //folder70.setOpacity(0);
+        kmlFadeOut(folder70);
         mapIndex = 0;
     } else if (timeVar == 1) {
         activeFolder = folder50;
-        folderCur.setOpacity(0);
-        folder70.setOpacity(0);
+	kmlFadeOut(folderCur);
+        //folderCur.setOpacity(0);
+        //folder70.setOpacity(0);
         mapIndex = 1;
     } else {
         activeFolder = folder70;
-        folderCur.setOpacity(0);
-        folder50.setOpacity(0);
+        //folderCur.setOpacity(0);
+        //folder50.setOpacity(0);
+        kmlFadeOut(folder50);
         mapIndex = 2;
     }
-    activeFolder.setOpacity($('#slider-container').slider('value') / 100);
+    //activeFolder.setOpacity($('#slider-container').slider('value') / 100);
+    kmlFadeIn(activeFolder);
 
 }
 }
@@ -400,27 +438,27 @@ function addKmlFromUrl(kmlUrl, flyVar, folderVar) {
         networkLink3.setFlyToView(flyVar);
         folder40.getFeatures().appendChild(networkLink3);
         break;
-	case 4:
+    case 4:
 	    networkLink4.setLink(link);
         networkLink4.setFlyToView(flyVar);
         folder50.getFeatures().appendChild(networkLink4);
         break;
-	case 5:
+    case 5:
 	    networkLink5.setLink(link);
         networkLink5.setFlyToView(flyVar);
         folder60.getFeatures().appendChild(networkLink5);
         break;
-	case 6:
+    case 6:
         networkLink6.setLink(link);
         networkLink6.setFlyToView(flyVar);
         folder70.getFeatures().appendChild(networkLink6);
         break;
-	case 7:
+    case 7:
         networkLink7.setLink(link);
         networkLink7.setFlyToView(flyVar);
         folder80.getFeatures().appendChild(networkLink7);
         break;
-	case 8:
+    case 8:
         networkLink8.setLink(link);
         networkLink8.setFlyToView(flyVar);
         folder90.getFeatures().appendChild(networkLink8);
@@ -445,11 +483,11 @@ function removeLayer() {
     folderCur.getFeatures().removeChild(networkLink);
     folder20.getFeatures().removeChild(networkLink1);
     folder30.getFeatures().removeChild(networkLink2);
-	folder40.getFeatures().removeChild(networkLink3);
+    folder40.getFeatures().removeChild(networkLink3);
     folder50.getFeatures().removeChild(networkLink4);
     folder60.getFeatures().removeChild(networkLink5);
     folder70.getFeatures().removeChild(networkLink6);
-	folder80.getFeatures().removeChild(networkLink7);
+    folder80.getFeatures().removeChild(networkLink7);
     folder90.getFeatures().removeChild(networkLink8);
 }
 
@@ -548,7 +586,32 @@ function changeLittleMap() {
 	folderRef.getFeatures().removeChild(networkLinkRef);
 	addKmlFromUrl('shp/little/' + $('input:radio[name=species]:checked').val(), false, 99);
 }
-	
+
+//These functions control the speed of the fade between the incoming/outgoing rasters
+function kmlFadeIn(folder) {
+	var kmlOpacity = folder.getOpacity();
+	var sliderOpacity = $('#slider-container').slider('value')/100;
+	var interval = setInterval(function() {
+	  if(kmlOpacity === sliderOpacity) {
+	    clearInterval(interval);
+	  } else {
+	    kmlOpacity = Math.min(sliderOpacity, kmlOpacity + 0.1);
+	    folder.setOpacity(kmlOpacity);
+	  }
+	}, 30);
+}
+
+function kmlFadeOut(folder) {
+	var kmlOpacity = folder.getOpacity()
+	var interval = setInterval(function() {
+	  if(kmlOpacity === 0.0) {
+	    clearInterval(interval);
+	  } else {
+	    kmlOpacity = Math.max(0.0, kmlOpacity - 0.1);
+	    folder.setOpacity(kmlOpacity);
+	  }
+	}, 30);
+}
 
 
 function el(e) {
