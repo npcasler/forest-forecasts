@@ -174,14 +174,14 @@ function init() {
     });
 
     $("#menu-close").click(function (e) {
-	e.preventDefault();
+	//e.preventDefault();
 	$("sidebar-wrapper").removeClass("active");
 	$("#menu-toggle").show();
 	$("#sidebar-iframe").hide();
     });
     
     $("#menu-toggle").click(function (e) {
-	e.preventDefault();
+//	e.preventDefault();
 	$("#sidebar-wrapper").addClass("active");
 	$("#menu-toggle").hide();
 	$("#sidebar-iframe").show();
@@ -300,6 +300,7 @@ function switchLayer() {
 	}
 	
 	legend('growth.png');
+	console.log('Layers loaded');
 	} else {
 	
 	
@@ -343,7 +344,8 @@ function switchLayer() {
 function switchTime() {
 
 	if ($('#testNewMaps').is(':checked') == true) {
-	
+	///CHECK THIS PART, THE ANIMATION STUTTERS AND FLASHES FOR SOME REASON
+	//COULD BE MEMORY BASED BUT I FEEL IT IS PART OF THE LOGIC	
 	timeVar = mapIndex;
 	
 	var folders = [folderCur, folder20, folder30, folder40, folder50, folder60, folder70, folder80, folder90];
@@ -353,16 +355,19 @@ function switchTime() {
 	for (var i=0, tot=folders.length; i < tot; i++) {
 		if (i === mapIndex - 1) {
 			activeFolder = folders[i];
-		} else {
-		  if (folders[i].getOpacity() !== 0.00){
-		    kmlFadeOut(folders[i]);
+			kmlFadeIn(folders[i]);
+		} else if (i === mapIndex - 2) {
+		  	kmlFadeOut(folders[i]);
+
+		} else { 
+			folders[i].setOpacity(0);
 		  }
 		  //folders[i].setOpacity(0);
 		}
-	}
+	
 		
 	//activeFolder.setOpacity($('#slider-container').slider('value') / 100);
-	kmlFadeIn(activeFolder);
+	//kmlFadeIn(activeFolder);
 
 		
 
