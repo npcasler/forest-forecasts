@@ -406,7 +406,7 @@ function viewChange() {
     //set url for change layer
     removeLayer();
     
-    url = 'maxent/' + $('#gcm').val() + '/' + $('#rcp').val() + '/' + $('input:radio[name=species]:checked').val();
+    url = 'change/' + $('#gcm').val() + '/' + $('#rcp').val() + '/' + $('input:radio[name=species]:checked').val();
     //clear current layer
     folderCur.getFeatures().removeChild(networkLink);
     //add change layer

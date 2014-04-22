@@ -110,10 +110,7 @@
             <!-- content goes here -->
             <div id="sidebar-wrapper">
                 <ul class="sidebar-nav">
-
-                    <h3>Range Projections</h3>
-                    <br>
-                    <h4><b>Species:</b></h4>
+                    <h4><b>Select a species:</b></h4>
                     <li>
                         <form style="text-indent: 0; line-height:20px;" id="urlform">
 
@@ -135,16 +132,6 @@
                             <br>
                             <input type="radio" name="species" value="quercus_gambelii"><b>Gambel oak</b>  <i>Quercus gambelii</i>
                             <br>
-
-                            <!--input type="button" id="time" class="btn btn-primary" value="current"><br-->
-                            <input type="checkbox" class="cycle" id="cycleMaps"><strong>Slideshow</strong>
-                            <input type="checkbox" class="test" id="testNewMaps"><strong>Prototype</strong>
-                            <br>
-
-                            <div class="btn-group-vertical">
-
-                                <input type="button" class="btn btn-default btn-sm" id="change" value="View Change" onclick="viewChange()">
-                            </div>
                         </form>
                     </li>
                     <li class="divider"></li>
@@ -156,18 +143,25 @@
                         </select>
                     </li>
                     <li class="divider"></li>
-                    <li class="nav-header" style="text-indent:0;">Carbon Scenario:
+                    <li class="nav-header" style="text-indent:0;">Select a carbon scenario:
                         <select id="rcp">
                             <option value="rcp26">2.6</option>
                             <option value="rcp45" selected="selected">4.5</option>
                             <option value="rcp85">8.5</option>
                         </select>
                     </li>
+										<li><a href="#page-features"><small>What's this?</small></a></li>
                     <li class="divider"></li>
                     <label>Adjust Transparency:
                         <input type="text" id="amount" style="border: 0; background: transparent; color:#f6931f; font-weight: bold;" />
                     </label>
                     <div id="slider-container" style="width:250px !important;"></div>
+										<br> 
+                    <input type="checkbox" class="cycle" id="cycleMaps"><strong>Slideshow</strong>
+                    <input type="checkbox" class="test" id="testNewMaps"><strong>Prototype</strong>
+                    <br>
+                    <div class="btn-group-vertical">
+    	               <input type="button" class="btn btn-default btn-sm" id="change" value="View Change" onclick="viewChange()"> </div>
 
                     <li class="nav-header" style="text-indent:0;">Reference Data:</li>
                     <fieldset id="layerArray">
@@ -183,6 +177,8 @@
                     </fieldset>
                     <li class="divider"></li>
                     <form action='javascript:submitLocation();void(0);'>
+												<label>Go to location:</label>
+												<br>
                         <input type="text" id="address"></input>
                         <button type="submit" class="btn btn-default">Go to</button>
                     </form>
