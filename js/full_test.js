@@ -158,11 +158,11 @@ function init() {
             orientation: "horizontal",
             range: "min",
             min: 1,
-            max: 9,
+            max: 8,
             value: 1,
             step: 1,
             slide: function (event, ui) {
-                $('#period').val('20' + ui.value + '0');
+                $('#period').val('20' + ui.value + '1');
 				mapIndex = ui.value;
 				switchTime();
 
@@ -170,7 +170,7 @@ function init() {
 
             }
         });
-        $('#period').val('20' + $('#time-slider').slider("value") + '0');
+        $('#period').val('20' + $('#time-slider').slider("value") + '1');
     });
 
     $("#menu-close").click(function (e) {
@@ -215,7 +215,7 @@ function initCB(instance) {
     folder60 = ge.createFolder('');
     folder70 = ge.createFolder('');
     folder80 = ge.createFolder('');
-    folder90 = ge.createFolder('');
+   // folder90 = ge.createFolder('');
     folderRef = ge.createFolder('');
 
     networkLink = ge.createNetworkLink('');
@@ -226,7 +226,7 @@ function initCB(instance) {
     networkLink5 = ge.createNetworkLink('');
     networkLink6 = ge.createNetworkLink('');
     networkLink7 = ge.createNetworkLink('');
-    networkLink8 = ge.createNetworkLink('');
+   // networkLink8 = ge.createNetworkLink('');
     networkLinkRef = ge.createNetworkLink('');
 
 
@@ -240,7 +240,7 @@ function initCB(instance) {
     ge.getFeatures().appendChild(folder60);
     ge.getFeatures().appendChild(folder70);
     ge.getFeatures().appendChild(folder80);
-    ge.getFeatures().appendChild(folder90)
+   // ge.getFeatures().appendChild(folder90);
     ge.getFeatures().appendChild(folderRef);
 
     activeFolder = folderCur;
@@ -251,7 +251,7 @@ function initCB(instance) {
     folder60.setOpacity(0);
     folder70.setOpacity(0);
     folder80.setOpacity(0);
-    folder90.setOpacity(0);
+   // folder90.setOpacity(0);
     folderRef.setOpacity(1);
     //add first layer and zoom to extent
     addKmlFromUrl('current/abies_lasiocarpa', true);
@@ -267,7 +267,7 @@ function initCB(instance) {
 	    // 'this' is the current DOM node being visited
 	    if ('getType' in this && this.getType() == 'KmlLineString')
 	      ++numLines;
-	}
+	
     });
 
     alert('There are ' + numLines + ' lines.');
@@ -281,15 +281,15 @@ function failureCB(errorCode) {
 }
 
 function switchLayer() {
-
-	if ($('#testNewMaps').is(':checked') == true) {
+  var modpath = "";
+	if ($('#testNewMaps').is(':checked') === true) {
 	
 	    
 	removeLayer();
 	
-	var modpath = 'maxent_test/' + $('#gcm').val() + '/' + $('#rcp').val() + '/';
+  modpath = 'maxent_new/' + $('#rcp').val() + '/';
 	
-	var years = ['2010/', '2020/', '2030/', '2040/', '2050/', '2060/', '2070/', '2080/', '2090/'];
+	var years = ['2011/', '2021/', '2031/', '2041/', '2051/', '2061/', '2071/', '2081/'];
 	
 	var urls = [];
 	
@@ -308,7 +308,7 @@ function switchLayer() {
 	
 
 
-    var modpath = 'maxent/' + $('#gcm').val() + '/' + $('#rcp').val() + '/'; //+ $('#time > button.active').val() + '/';
+   modpath = 'maxent/' + $('#gcm').val() + '/' + $('#rcp').val() + '/'; //+ $('#time > button.active').val() + '/';
     /*if ($('#time > button.active').val() == "current") {
 				url = 'current/' + $('input:radio[name=species]:checked').val();
 				mapIndex = 1;
@@ -343,12 +343,12 @@ function switchLayer() {
 
 function switchTime() {
 
-	if ($('#testNewMaps').is(':checked') == true) {
+	if ($('#testNewMaps').is(':checked') === true) {
 	///CHECK THIS PART, THE ANIMATION STUTTERS AND FLASHES FOR SOME REASON
 	//COULD BE MEMORY BASED BUT I FEEL IT IS PART OF THE LOGIC	
 	timeVar = mapIndex;
 	
-	var folders = [folderCur, folder20, folder30, folder40, folder50, folder60, folder70, folder80, folder90];
+	var folders = [folderCur, folder20, folder30, folder40, folder50, folder60, folder70, folder80];
 	
 	activeFolder = folders[mapIndex - 1];
 	
@@ -374,7 +374,7 @@ function switchTime() {
 } else {
     timeVar = $('#time > button.active').val();
 
-    if (timeVar == 0) {
+    if (timeVar === 0) {
         activeFolder = folderCur;
         //folder50.setOpacity(0);
         //folder70.setOpacity(0);
@@ -419,7 +419,7 @@ function viewChange() {
 function addKmlFromUrl(kmlUrl, flyVar, folderVar) {
     var link = ge.createLink('');
     link.setHref('http://scooby.iplantcollaborative.org/' + kmlUrl + '/doc.kml');
-
+     console.log('http://scooby.iplantcollaborative.org/' + kmlUrl + '/doc.kml');
 
     /*if (folderVar > 0) {
 				folderUrl = 'folder' + folderVar;
@@ -463,11 +463,11 @@ function addKmlFromUrl(kmlUrl, flyVar, folderVar) {
         networkLink7.setFlyToView(flyVar);
         folder80.getFeatures().appendChild(networkLink7);
         break;
-    case 8:
+/*    case 8:
         networkLink8.setLink(link);
         networkLink8.setFlyToView(flyVar);
         folder90.getFeatures().appendChild(networkLink8);
-        break;
+        break; */
     case 99:
         //reserved for extraneous data(little maps and extinction maps)
         networkLinkRef.setLink(link);
@@ -493,7 +493,7 @@ function removeLayer() {
     folder60.getFeatures().removeChild(networkLink5);
     folder70.getFeatures().removeChild(networkLink6);
     folder80.getFeatures().removeChild(networkLink7);
-    folder90.getFeatures().removeChild(networkLink8);
+ //   folder90.getFeatures().removeChild(networkLink8);
 }
 
 function setRefLayer(layerId, state) {
@@ -505,10 +505,10 @@ function setRefLayer(layerId, state) {
 //Function to loop through time series of species
 function cycleLayers() {
 
-	if ($('#testNewMaps').is(':checked') == true) {
+	if ($('#testNewMaps').is(':checked') === true) {
 	
 	ts = $('#time-slider').slider();
-	if (mapIndex == 9) {
+	if (mapIndex == 8) {
 		ts.slider('option','value', 1);
 		ts.slider('option', 'slide').call(ts,null,{ handle: $('.ui-slider-handle', ts), value: 1});
 		
@@ -534,7 +534,7 @@ function cycleLayers() {
     switchTime();
     mapIndex = mapIndex + 1;
 }
-};
+}
 
 
 var geocode = function (address) {
@@ -579,7 +579,7 @@ function legend(thisLegend) {
 }
 
 function setLittleMap(checked) {
-    if (checked == true) {
+    if (checked === true) {
         addKmlFromUrl('shp/little/' + $('input:radio[name=species]:checked').val(), false, 99);
         console.log('shp/little/' + $('input:radio[name=species]:checked').val());
     } else {
@@ -607,7 +607,7 @@ function kmlFadeIn(folder) {
 }
 
 function kmlFadeOut(folder) {
-	var kmlOpacity = folder.getOpacity()
+	var kmlOpacity = folder.getOpacity();
 	var interval = setInterval(function() {
 	  if(kmlOpacity === 0.0) {
 	    clearInterval(interval);
