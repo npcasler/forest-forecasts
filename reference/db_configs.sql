@@ -30,6 +30,36 @@ SELECT year, sum(c_count)
   WHERE rcp='rcp45'
   GROUP BY year
   ORDER BY year;
+ 
+--to get the area in sq.km per species per year
+SELECT species, rcp, year, ST_Count(rast, true) INTO binary_area FROM binary_rasters WHERE (year='2011' OR year='2081');
+
+ALTER TABLE binary_area ADD COLUMN area bigint;
+--convert the raster cell count to km^2
+UPDATE binary_area SET area_km = st_count * 100;
+
+--Get the loss of range from 2011 to 2081 per species and rcp
+
+SELECT a.species, a.area_km AS current_area, b.area_km AS future_area, a.area_km - b.area_km AS range_loss 
+  INTO range_change_rcp26 
+  FROM (SELECT species, area_km
+          FROM binary_area
+          WHERE rcp='rcp26' AND year='2011') AS a,
+        (SELECT species, area_km
+          FROM binary_area
+          WHERE rcp='rcp85' AND year='2081') AS b
+  WHERE a.species = b.species ORDER BY range_loss;
+
+SELECT a.species, a.area_km AS current_area, b.area_km AS future_area, a.area_km - b.area_km AS range_loss 
+  INTO range_change_rcp85
+  FROM (SELECT species, area_km 
+          FROM binary_area
+          WHERE rcp='rcp85' AND year='2011') AS a,
+        (SELECT species, area_km
+          FROM binary_area
+          WHERE rcp='rcp85' AND year='2081') AS b
+  WHERE a.species = b.species ORDER BY range_loss;
+
 
 -- To create a line feature class of centroid movement
 SELECT c.species, ST_MAKELINE(the_geom) AS lines INTO vectors 
@@ -53,6 +83,7 @@ SELECT species, sum(ST_Length_Spheroid(lines, 'SPHEROID["WGS_84",6378137,298.257
   FROM sum_vectors
   GROUP BY species
   ORDER BY km_displacement;
+
 
 --To download the presence data
 curl -L -O https://www.dropbox.com/s/ij72kktcpwnpjyc/BIENALL.zip
