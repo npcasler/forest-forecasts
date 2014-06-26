@@ -20,16 +20,33 @@ CREATE TABLE public.rasters (gid serial PRIMARY KEY,
 INSERT INTO rasters (species, year, rcp, rast) SELECT r.filename, '2011', 'rcp45', r.rast FROM rasters_2011 AS r;
 
 --Remove file extension from the species column
+--NOTE: THIS MAY REMOVE trailing 'i's in species name - don't know why yet
 UPDATE rasters SET species = trim(trailing '.tif' from species);
 --To create a table of centroids:
 SELECT rcp, year, species, ST_Centroid(ST_MinConvexHull(rast)) INTO centroids FROM rasters GROUP BY rcp, year, ST_Centroid(ST_MinConvexHull(rast)) ORDER BY year, species;
 
 --to get the area in sq.km of the total range per year
+--NOTE: NOT VALID WAY TO CALCULATE THIS SINCE IT DOESNT ACCOUNT FOR OVERLAPPING RANGES
 SELECT year, sum(c_count) 
   FROM stats.area
   WHERE rcp='rcp45'
   GROUP BY year
   ORDER BY year;
+
+--to REALLY get the count of species per cell for the year and rcp
+SELECT ST_Union(rast, 'sum') INTO rcp85_union FROM binary_rasters WHERE year = '2081' AND rcp='rcp85';
+
+--For gdal to recognize the raster, it expects an rid (serial) field and that a rast(raster) field
+ALTER TABLE rcp85_union ADD COLUMN rid serial;
+ALTER TABLE rcp85_union RENAME COLUMN st_union TO rast;
+
+--to check how many cells there are in the overlaid raster
+SELECT ST_COUNT(rast) FROM rcp85_union;
+
+--to get the cell count per raster value
+SELECT ST_ValueCount(rast) FROM rcp85_union;
+
+--Working on configuring gdal drivers to allow postgis raster export...
  
 --to get the area in sq.km per species per year
 SELECT species, rcp, year, ST_Count(rast, true) INTO binary_area FROM binary_rasters WHERE (year='2011' OR year='2081');
@@ -59,6 +76,8 @@ SELECT a.species, a.area_km AS current_area, b.area_km AS future_area, a.area_km
           FROM binary_area
           WHERE rcp='rcp85' AND year='2081') AS b
   WHERE a.species = b.species ORDER BY range_loss;
+
+
 
 
 -- To create a line feature class of centroid movement
